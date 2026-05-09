@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <title>Cast Your Vote</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <p>Please, Vote For Your Favorite Candidate!</p>
+
+    <select id="candidate">
+
+      <option value="">-- Select Candidate --</option>
+
+      <option value="A">Candidate A</option>
+
+      <option value="B">Candidate B</option>
+
+      <option value="C">Candidate C</option>
+
+    </select>
+
+    <br><br>
+
+    <button onclick="castVote()"
+      style="background: linear-gradient(90deg, #95f79a, #154b1d);">
+
+      Submit Vote
+
+    </button>
+
+    <button
+      class="logout-btn"
+      onclick="logout()"
+      style="background: linear-gradient(90deg, #ecf795, #adb002);">
+
+      Logout
+
+    </button>
+    
+    <button class="back-home-btn" onclick="goHome()">
+    ← Back To Dashboard
+</button>
+
+  </div>
+
+  <script>
+
+    async function castVote() {
+
+      const user = JSON.parse(
+        localStorage.getItem("user")
+      );
+
+      const candidate =
+      document.getElementById("candidate").value;
+
+      if(!user){
+
+        alert("Please register first");
+
+        return;
+
+      }
+
+      if(!candidate){
+
+        alert("Please select candidate");
+
+        return;
+
+      }
+
+      try {
+
+        const response = await axios.post(
+
+          "http://localhost:5000/api/vote/vote",
+
+          {
+
+            voterId: user._id,
+
+            candidate: candidate
+
+          }
+
+        );
+
+        alert(response.data.message);
+
+        window.location.href = "result.html";
+
+      } catch(err){
+
+        console.log(err);
+
+        alert(
+          err.response?.data?.message ||
+          "Voting Failed"
+        );
+
+      }
+
+    }
+
+    function logout(){
+
+      localStorage.clear();
+
+      window.location.href = "index.html";
+
+    }
+
+  </script>
+
+<script>
+function goHome(){
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+
+</html>

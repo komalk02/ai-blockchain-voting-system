@@ -1,0 +1,65 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    overflow-x: hidden;
+    padding: 30px;
+}
+
+.container,
+.container-box-bowl {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 25px;
+    padding: 40px;
+    box-shadow:
+        0 8px 32px rgba(0,0,0,0.3),
+        inset 0 1px 1px rgba(255,255,255,0.2);
+    color: white;
+    animation: fadeIn 1s ease;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: #ffffff;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+h4 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    color: #ccefff;
+}
+
+p {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #e0f7ff;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 16px;
+}
+
+back-home-btn {
+    background: linear-gradient(90deg, #8e9eab, #eef2f3);
+    color: black;
+}
