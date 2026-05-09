@@ -49,7 +49,7 @@ async function displayLedger() {
     try {
 
         const response = await axios.get(
-            "http://localhost:5000/api/vote/results"
+            "https://voting-backend-z3hn.onrender.com/api/vote/results"
         );
 
         const ledger = response.data;
@@ -95,7 +95,7 @@ async function displayCandidateSummary() {
     try {
 
         const response = await axios.get(
-            "http://localhost:5000/api/vote/results"
+            "https://voting-backend-z3hn.onrender.com/api/vote/results"
         );
 
         const ledger = response.data;
@@ -178,7 +178,7 @@ window.onload = async function () {
     await displayCandidateSummary();
 
     const response = await axios.get(
-        "http://localhost:5000/api/vote/results"
+        "https://voting-backend-z3hn.onrender.com/api/vote/results"
     );
 
     const votes = response.data;
