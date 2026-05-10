@@ -9,7 +9,6 @@ const voteRoutes = require("./routes/voteRoutes");
 
 const app = express();
 
-const cors = require("cors");
 
 app.use(cors());
 
