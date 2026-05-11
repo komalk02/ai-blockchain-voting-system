@@ -29,7 +29,14 @@ router.post("/register", async (req, res) => {
 
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        let hashedPassword = "";
+
+if(password){
+
+    hashedPassword =
+    await bcrypt.hash(password, 10);
+
+}
 
         const user = new User({
 
@@ -100,6 +107,53 @@ router.post("/login", async (req, res) => {
         res.json({
             token,
             user
+        });
+
+    } catch(err){
+
+        console.log(err);
+
+        res.status(500).json({
+            error: err.message
+        });
+
+    }
+
+});
+
+router.post("/face-login", async (req, res) => {
+
+    try {
+
+        const { faceDescriptor } = req.body;
+
+        const users = await User.find();
+
+        let matchedUser = null;
+
+        for(const user of users){
+
+            if(
+                JSON.stringify(user.faceDescriptor.slice(0,5)) ===
+                JSON.stringify(faceDescriptor.slice(0,5))
+            ){
+                matchedUser = user;
+                break;
+            }
+
+        }
+
+        if(!matchedUser){
+
+            return res.status(401).json({
+                message: "Face not recognized"
+            });
+
+        }
+
+        res.json({
+            message: "Login Successful",
+            user: matchedUser
         });
 
     } catch(err){
