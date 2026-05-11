@@ -1,170 +1,147 @@
 const express = require("express");
-
-const router = express.Router();
-
 const bcrypt = require("bcryptjs");
-
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 
+const router = express.Router();
+
+
+// ================= REGISTER =================
+
 router.post("/register", async (req, res) => {
 
-    try {
+   try {
 
-        const {
-            name,
-            email,
-            password,
-            faceDescriptor
-        } = req.body;
+      const {
+         name,
+         email,
+         password,
+         faceDescriptor
+      } = req.body;
 
-        const existingUser = await User.findOne({ email });
+      const existingUser =
+      await User.findOne({ email });
 
-        if(existingUser){
+      if(existingUser){
 
-            return res.status(400).json({
-                message: "User already exists"
-            });
+         return res.status(400).json({
+            message: "User already exists"
+         });
 
-        }
+      }
 
-        let hashedPassword = "";
+      let hashedPassword = "";
 
-if(password){
+      if(password){
 
-    hashedPassword =
-    await bcrypt.hash(password, 10);
+         hashedPassword =
+         await bcrypt.hash(password, 10);
 
-}
+      }
 
-        const user = new User({
+      const user = new User({
 
-            name,
-            email,
-            password: hashedPassword,
-            faceDescriptor
+         name,
 
-        });
+         email,
 
-        await user.save();
+         password: hashedPassword,
 
-        res.json({
+         faceDescriptor
 
-   message: "User Registered Successfully",
+      });
 
-   user
+      await user.save();
+
+      res.json({
+         message: "Registration successful"
+      });
+
+   } catch(err){
+
+      console.log(err);
+
+      res.status(500).json({
+         message: "Server error"
+      });
+
+   }
 
 });
 
-    } catch(err){
 
-        console.log(err);
-
-        res.status(500).json({
-            error: err.message
-        });
-
-    }
-
-});
+// ================= LOGIN =================
 
 router.post("/login", async (req, res) => {
 
-    try {
+   try {
 
-        const { email, password } = req.body;
+      const {
+         email,
+         password
+      } = req.body;
 
-        const user = await User.findOne({ email });
+      const user =
+      await User.findOne({ email });
 
-        if(!user){
+      if(!user){
 
-            return res.status(400).json({
-                message: "User not found"
-            });
+         return res.status(400).json({
+            message: "User not found"
+         });
 
-        }
+      }
 
-        const isMatch = await bcrypt.compare(
-            password,
-            user.password
-        );
+      const validPassword =
+      await bcrypt.compare(
+         password,
+         user.password
+      );
 
-        if(!isMatch){
+      if(!validPassword){
 
-            return res.status(400).json({
-                message: "Invalid credentials"
-            });
+         return res.status(400).json({
+            message: "Invalid password"
+         });
 
-        }
+      }
 
-        const token = jwt.sign(
-            { id: user._id },
-            "SECRETKEY",
-            { expiresIn: "1d" }
-        );
+      const token = jwt.sign(
 
-        res.json({
-            token,
-            user
-        });
+         {
+            id: user._id
+         },
 
-    } catch(err){
+         process.env.JWT_SECRET,
 
-        console.log(err);
+         {
+            expiresIn: "1d"
+         }
 
-        res.status(500).json({
-            error: err.message
-        });
+      );
 
-    }
+      res.json({
 
-});
+         token,
 
-router.post("/face-login", async (req, res) => {
+         user: {
+            id: user._id,
+            name: user.name,
+            email: user.email
+         }
 
-    try {
+      });
 
-        const { faceDescriptor } = req.body;
+   } catch(err){
 
-        const users = await User.find();
+      console.log(err);
 
-        let matchedUser = null;
+      res.status(500).json({
+         message: "Server error"
+      });
 
-        for(const user of users){
-
-            if(
-                JSON.stringify(user.faceDescriptor.slice(0,5)) ===
-                JSON.stringify(faceDescriptor.slice(0,5))
-            ){
-                matchedUser = user;
-                break;
-            }
-
-        }
-
-        if(!matchedUser){
-
-            return res.status(401).json({
-                message: "Face not recognized"
-            });
-
-        }
-
-        res.json({
-            message: "Login Successful",
-            user: matchedUser
-        });
-
-    } catch(err){
-
-        console.log(err);
-
-        res.status(500).json({
-            error: err.message
-        });
-
-    }
+   }
 
 });
 
